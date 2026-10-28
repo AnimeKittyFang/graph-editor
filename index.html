@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GraphML Viewer</title>
+<style>
+  :root { --bg:#1b1b1f; --panel:#2a2a30; --text:#e8e8ec; --accent:#9b6bd6; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; height:100%; background:var(--bg); color:var(--text); font-family:Roboto,system-ui,sans-serif; overflow:hidden; }
+  #stage { position:fixed; inset:0; width:100%; height:100%; cursor:grab; touch-action:none; display:block; }
+  #stage.dragging { cursor:grabbing; }
+  .node { cursor:default; }
+  #tooltip { position:fixed; z-index:20; max-width:min(520px,90vw); pointer-events:none; display:none;
+    white-space:pre-wrap; line-height:1.3; background:#2F2F2F; color:#ddd; padding:10px; border-radius:4px; font-size:16px;
+    box-shadow:0 6px 24px rgba(0,0,0,.55); overflow-wrap:anywhere; }
+  #tooltip.show { display:block; }
+  #tooltip.plain { font-size:14px; }
+  #bar { position:fixed; top:12px; left:12px; z-index:10; display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+  button, label.btn { background:var(--panel); color:var(--text); border:1px solid #444; border-radius:6px; padding:6px 10px; font:inherit; font-size:13px; cursor:pointer; }
+  button:hover, label.btn:hover { border-color:var(--accent); }
+  #file { display:none; }
+  #msg { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:24px; color:#aaa; pointer-events:none; z-index:5; }
+  #msg.hide { display:none; }
+  #drop { position:fixed; inset:0; z-index:30; display:none; align-items:center; justify-content:center; background:rgba(155,107,214,.18); border:3px dashed var(--accent); font-size:22px; pointer-events:none; }
+  #drop.show { display:flex; }
+
+  .editonly { display:none; } body.edit .editonly { display:inline-block; } .sep { width:1px; height:22px; background:#444; margin:0 4px; }
+  button.on { border-color:var(--accent); background:#3a3045; } button:disabled { opacity:.45; cursor:default; }
+  #edit[aria-pressed="true"] { background:var(--accent); border-color:var(--accent); color:#fff; }
+  button.danger { border-color:#a33; color:#f99; }
+  body.edit #stage .node { cursor:move; } body.edit.linking #stage .node { cursor:crosshair; }
+  #stage.moving { cursor:move; }
+  .hit { pointer-events:none; } body.edit .hit { pointer-events:stroke; cursor:pointer; }
+  #panel { position:fixed; top:0; right:0; bottom:0; width:340px; z-index:15; display:none; overflow:auto; padding:14px; background:#222228; border-left:1px solid #3a3a44; font-size:13px; }
+  body.edit #panel { display:block; }
+  #panel h2 { margin:0 0 8px; font-size:16px; } #panel h3 { margin:8px 0; font-size:14px; }
+  #panel label { display:block; margin:12px 0 4px; color:#aaa; }
+  #panel textarea, #panel input[type=text] { width:100%; background:#18181c; color:var(--text); border:1px solid #444; border-radius:6px; padding:6px 8px; font:12px/1.4 ui-monospace,Menlo,Consolas,monospace; }
+  #panel textarea { resize:vertical; } #panel .row { display:flex; gap:6px; align-items:center; margin:6px 0; }
+  #panel .hint { color:#999; white-space:pre-line; line-height:1.5; } #panel .thumb { width:44px; height:44px; object-fit:contain; background:#111; border-radius:6px; }
+  #toast { position:fixed; left:50%; bottom:22px; transform:translateX(-50%); z-index:40; background:#000c; padding:8px 14px; border-radius:8px; opacity:0; transition:opacity .2s; pointer-events:none; }
+  #toast.show { opacity:1; }
+
+  #search { position:fixed; top:58px; left:12px; width:380px; max-height:calc(100vh - 80px); z-index:12; display:none; flex-direction:column; gap:8px; padding:10px; background:#222228; border:1px solid #3a3a44; border-radius:10px; box-shadow:0 8px 28px rgba(0,0,0,.5); font-size:13px; }
+  #search.show { display:flex; }
+  .sbox { position:relative; } .sbox input { width:100%; background:#18181c; color:var(--text); border:1px solid #444; border-radius:8px; padding:8px 34px 8px 10px; font:inherit; font-size:14px; }
+  .sbox input:focus { outline:none; border-color:var(--accent); }
+  #qclear { position:absolute; right:4px; top:50%; transform:translateY(-50%); width:26px; height:26px; padding:0; border:0; background:transparent; color:#aaa; border-radius:50%; font-size:14px; line-height:1; }
+  #qclear:hover { background:#3a3a44; color:#fff; }
+  .smode { display:flex; gap:16px; color:#bbb; } .smode label { display:flex; align-items:center; gap:5px; cursor:pointer; }
+  #scount { color:#999; font-size:12px; min-height:14px; }
+  #results { overflow:auto; display:flex; flex-direction:column; gap:6px; min-height:0; }
+  .result { padding:7px 9px; border:1px solid #33333b; border-radius:8px; background:#1b1b20; cursor:pointer; }
+  .result:hover, .result:focus { border-color:var(--accent); outline:none; }
+  .rtitle { font-weight:700; margin-bottom:3px; color:#ddd; } .snip { color:#b8b8c0; line-height:1.4; overflow-wrap:anywhere; }
+  mark { background:#ffd54a; color:#111; border-radius:2px; padding:0 1px; }
+  .chip { display:inline-block; margin:0 4px 2px 0; padding:1px 7px; border-radius:10px; background:#3a2f45; color:#eee; }
+  .more { color:#888; font-size:12px; padding:4px; }
+  .ring { fill:none; stroke:#ff9f1c; stroke-width:3; pointer-events:none; filter:drop-shadow(0 0 5px #ff9f1c); transform-box:fill-box; transform-origin:center; }
+  .ring.pulse { animation:ringpulse .8s ease-in-out 2; } @keyframes ringpulse { 50% { transform:scale(1.8); stroke-width:2; } }
+  .ic { display:inline-flex; vertical-align:-3px; margin-right:4px; } .ic svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  button[aria-label] .ic { margin-right:0; } #qclear .ic { margin:0; } #qclear .ic svg { width:14px; height:14px; } #panel .row button .ic { margin:0; }
+  .line { margin:2px 0; }
+  #ctx { position:fixed; z-index:50; display:none; flex-direction:column; min-width:180px; padding:4px; background:#26262c; border:1px solid #44444e; border-radius:8px; box-shadow:0 8px 28px rgba(0,0,0,.55); }
+  #ctx.show { display:flex; } #ctx button { text-align:left; border:0; background:transparent; padding:7px 10px; border-radius:6px; } #ctx button:hover { background:#3a3045; }
+  body.linking .hit { pointer-events:none; }
+  #panel select, #panel input[type=number] { background:#18181c; color:var(--text); border:1px solid #444; border-radius:6px; padding:6px 8px; font:inherit; font-size:13px; }
+  #panel select { width:100%; } #panel input[type=number] { width:90px; } #panel input[type=color] { width:38px; height:28px; padding:0; border:1px solid #444; border-radius:6px; background:none; cursor:pointer; }
+  #panel .lbl { color:#aaa; font-size:12px; } #panel .appearance .row { flex-wrap:wrap; } #panel > button.danger { margin-top:16px; }
+</style>
+</head>
+<body>
+<svg id="stage" xmlns="http://www.w3.org/2000/svg"><g id="world"><g id="edges"></g><g id="nodes"></g></g></svg>
+<div id="bar">
+  <label class="btn" for="file">Ouvrir un .graphml</label><input id="file" type="file" accept=".graphml,.xml,text/xml">
+  <button id="zin" title="Zoom +">+</button><button id="zout" title="Zoom −">−</button><button id="fit" title="Ajuster à l'écran">Ajuster</button>
+  <button id="search-btn" data-icon="search" title="Rechercher dans les descriptions ou les labels"> Recherche</button>
+  <button id="edit" data-icon="edit" aria-pressed="false" title="Activer / désactiver le mode édition"> Mode édition</button>
+  <span class="editonly sep"></span>
+  <button id="tool-select" class="editonly on" title="Déplacer / sélectionner">Sélection</button>
+  <button id="tool-link" class="editonly" title="Créer un lien entre deux nœuds">Lier</button>
+  <button id="undo" class="editonly" data-icon="undo" aria-label="Précédent" title="Précédent (Ctrl+Z)" disabled></button>
+  <button id="redo" class="editonly" data-icon="redo" aria-label="Suivant" title="Suivant (Ctrl+Maj+Z)" disabled></button>
+  <button id="export" class="editonly" title="Télécharger le .graphml modifié">Exporter .graphml</button>
+</div>
+<div id="msg">Chargement…</div>
+<div id="drop">Dépose un fichier .graphml</div>
+<div id="tooltip"></div>
+<aside id="panel"></aside>
+<div id="search">
+  <div class="sbox"><input id="q" type="text" placeholder="Rechercher un mot ou un bloc de mots…" autocomplete="off" spellcheck="false"><button id="qclear" title="Effacer la recherche" aria-label="Effacer la recherche" data-icon="close"></button></div>
+  <div class="smode"><label><input type="radio" name="smode" value="desc" checked> Descriptions</label><label><input type="radio" name="smode" value="labels"> Labels</label></div>
+  <div id="scount"></div>
+  <div id="results"></div>
+</div>
+<div id="ctx"></div>
+<div id="toast"></div>
+<script src="viewer.js"></script>
+</body>
+</html>
