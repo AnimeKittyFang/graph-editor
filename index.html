@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -68,34 +68,39 @@
   #panel select, #panel input[type=number] { background:#18181c; color:var(--text); border:1px solid #444; border-radius:6px; padding:6px 8px; font:inherit; font-size:13px; }
   #panel select { width:100%; } #panel input[type=number] { width:90px; } #panel input[type=color] { width:38px; height:28px; padding:0; border:1px solid #444; border-radius:6px; background:none; cursor:pointer; }
   #panel .lbl { color:#aaa; font-size:12px; } #panel .appearance .row { flex-wrap:wrap; } #panel > button.danger { margin-top:16px; }
+  #lang { position:fixed; left:12px; bottom:12px; z-index:16; display:flex; background:var(--panel); border:1px solid #444; border-radius:8px; overflow:hidden; }
+  #lang button { border:0; border-radius:0; background:transparent; padding:6px 12px; font-weight:600; letter-spacing:.04em; } #lang button.on { background:var(--accent); color:#fff; }
+  #search { max-height:calc(100vh - 130px); }
 </style>
 </head>
 <body>
 <svg id="stage" xmlns="http://www.w3.org/2000/svg"><g id="world"><g id="edges"></g><g id="nodes"></g></g></svg>
 <div id="bar">
-  <label class="btn" for="file">Ouvrir un .graphml</label><input id="file" type="file" accept=".graphml,.xml,text/xml">
-  <button id="zin" title="Zoom +">+</button><button id="zout" title="Zoom −">−</button><button id="fit" title="Ajuster à l'écran">Ajuster</button>
-  <button id="search-btn" data-icon="search" title="Rechercher dans les descriptions ou les labels"> Recherche</button>
-  <button id="edit" data-icon="edit" aria-pressed="false" title="Activer / désactiver le mode édition"> Mode édition</button>
+  <label class="btn" for="file" data-i18n="openFile">Open a .graphml</label><input id="file" type="file" accept=".graphml,.xml,text/xml">
+  <button id="zin" data-i18n-title="zoomIn" data-i18n-aria="zoomIn">+</button><button id="zout" data-i18n-title="zoomOut" data-i18n-aria="zoomOut">−</button><button id="fit" data-i18n-title="fitTitle" data-i18n="fit">Fit</button>
+  <button id="search-btn" data-icon="search" data-i18n-title="searchTitle"><span data-i18n="search">Search</span></button>
+  <button id="edit" data-icon="edit" aria-pressed="false" data-i18n-title="editTitle"><span data-i18n="edit">Edit mode</span></button>
   <span class="editonly sep"></span>
-  <button id="tool-select" class="editonly on" title="Déplacer / sélectionner">Sélection</button>
-  <button id="tool-link" class="editonly" title="Créer un lien entre deux nœuds">Lier</button>
-  <button id="undo" class="editonly" data-icon="undo" aria-label="Précédent" title="Précédent (Ctrl+Z)" disabled></button>
-  <button id="redo" class="editonly" data-icon="redo" aria-label="Suivant" title="Suivant (Ctrl+Maj+Z)" disabled></button>
-  <button id="export" class="editonly" title="Télécharger le .graphml modifié">Exporter .graphml</button>
+  <button id="tool-select" class="editonly on" data-i18n-title="selectTitle" data-i18n="select">Select</button>
+  <button id="tool-link" class="editonly" data-i18n-title="linkTitle" data-i18n="link">Link</button>
+  <button id="magnet" class="editonly" data-icon="magnet" aria-pressed="false" data-i18n-aria="magnetTitle" data-i18n-title="magnetTitle"></button>
+  <button id="undo" class="editonly" data-icon="undo" data-i18n-aria="undoLabel" data-i18n-title="undoTitle" disabled></button>
+  <button id="redo" class="editonly" data-icon="redo" data-i18n-aria="redoLabel" data-i18n-title="redoTitle" disabled></button>
+  <button id="export" class="editonly" data-i18n-title="exportTitle" data-i18n="export">Export .graphml</button>
 </div>
-<div id="msg">Chargement…</div>
-<div id="drop">Dépose un fichier .graphml</div>
+<div id="msg" data-i18n="loading">Loading…</div>
+<div id="drop" data-i18n="drop">Drop a .graphml file</div>
 <div id="tooltip"></div>
 <aside id="panel"></aside>
 <div id="search">
-  <div class="sbox"><input id="q" type="text" placeholder="Rechercher un mot ou un bloc de mots…" autocomplete="off" spellcheck="false"><button id="qclear" title="Effacer la recherche" aria-label="Effacer la recherche" data-icon="close"></button></div>
-  <div class="smode"><label><input type="radio" name="smode" value="desc" checked> Descriptions</label><label><input type="radio" name="smode" value="labels"> Labels</label></div>
+  <div class="sbox"><input id="q" type="text" data-i18n-ph="qPlaceholder" placeholder="Search…" autocomplete="off" spellcheck="false"><button id="qclear" data-i18n-title="clearSearch" data-i18n-aria="clearSearch" data-icon="close"></button></div>
+  <div class="smode"><label><input type="radio" name="smode" value="desc" checked> <span data-i18n="descs">Descriptions</span></label><label><input type="radio" name="smode" value="labels"> <span data-i18n="labelsMode">Labels</span></label></div>
   <div id="scount"></div>
   <div id="results"></div>
 </div>
 <div id="ctx"></div>
 <div id="toast"></div>
+<div id="lang" role="group" aria-label="Language"><button data-l="en">EN</button><button data-l="fr">FR</button></div>
 <script src="viewer.js"></script>
 </body>
 </html>

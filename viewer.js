@@ -128,6 +128,97 @@ function drawLabel(l, local, g, yOff) {
   return h;
 }
 
+
+// ======================================================================
+//  Internationalisation (EN / FR)
+// ======================================================================
+const plural = (n, one, many) => `${n} ${n > 1 ? many : one}`;
+const I18N = {
+  en: {
+    openFile: 'Open a .graphml', zoomIn: 'Zoom in', zoomOut: 'Zoom out', fit: 'Fit', fitTitle: 'Fit to screen',
+    search: 'Search', searchTitle: 'Search in descriptions or labels', edit: 'Edit mode', editTitle: 'Turn edit mode on / off',
+    select: 'Select', selectTitle: 'Move / select', link: 'Link', linkTitle: 'Create a link between two nodes',
+    undoLabel: 'Previous', undoTitle: 'Previous (Ctrl+Z)', redoLabel: 'Next', redoTitle: 'Next (Ctrl+Shift+Z)',
+    export: 'Export .graphml', exportTitle: 'Download the edited .graphml', loading: 'Loading…', drop: 'Drop a .graphml file',
+    qPlaceholder: 'Search a word or a block of words…', clearSearch: 'Clear search', descs: 'Descriptions', labelsMode: 'Labels',
+    invalidFile: 'Invalid GraphML file.', openHint: 'Open a .graphml file (button at the top left) or drop it here.',
+    confirmLoss: 'Unexported changes will be lost. Continue?',
+    nothingUndo: 'Nothing to undo', undone: 'Undone', nothingRedo: 'Nothing to redo', redone: 'Redone',
+    magnetTitle: 'Magnet: snap while dragging (origin points, alignments, equidistance)', magnetOn: 'Magnet on', magnetOff: 'Magnet off',
+    linkToolToast: 'Drag from one node to another (or click the start node, then the end node)',
+    exported: 'File exported', linkExists: 'This link already exists', linkCreated: 'Link created', nodeCreated: 'Node created',
+    cut: 'Cut', clipEmpty: 'Clipboard is empty', imageChanged: 'Image changed', imageBad: 'Unreadable image',
+    nodesN: (n) => plural(n, 'node', 'nodes'), linksN: (n) => plural(n, 'link', 'links'),
+    deleted: (parts, total) => parts.join(' and ') + ' deleted',
+    copied: (n) => plural(n, 'node', 'nodes') + ' copied', pasted: (n) => plural(n, 'node', 'nodes') + ' pasted',
+    newNode: 'NEW NODE',
+    panelTitle: 'Editing', linkHintEnd: 'Now click the end node (Esc to cancel).', linkHintStart: 'Link tool: drag from one node to another, or click the start node, then the end node.',
+    delSel: 'Delete selection', linkOne: (s, t) => `Link ${s} → ${t}`, linksSel: (n) => `${n} links selected`,
+    hintLinks: 'Ctrl+click: add / remove\nDel: delete',
+    mixSel: (nN, nE) => `${plural(nN, 'node', 'nodes')}${nE ? ' and ' + plural(nE, 'link', 'links') : ''} selected`,
+    hintMulti: 'Drag: move the group\nCtrl+click: add / remove\nCtrl+C / Ctrl+X / Ctrl+V: copy / cut / paste\nDel: delete',
+    hintNone: 'Drag a node to move it (middle button: pan the view).\nClick a node or a link to select it (Ctrl+click: multi-select).\nRight-click the background: create a node.\nCtrl+C / Ctrl+X / Ctrl+V: copy / cut / paste.\nLink tool: drag from one node to another.',
+    nodeTitle: (id) => 'Node ' + id, changeImage: 'Change image…', descLabel: 'Description (text or HTML, shown on hover)',
+    labelsLabel: 'Labels', remove: 'Delete', addLabel: '+ Add a label',
+    appearance: 'Appearance', mixed: 'Mixed', imageOpt: 'Image (icon)', fill: 'Color', stroke: 'Outline', sizePx: 'Size (px)',
+    colorHint: 'Color and outline: available for shapes (pick a shape above).',
+    shape_ELLIPSE: 'Round', shape_RECTANGLE: 'Square / rectangle', shape_ROUND_RECTANGLE: 'Rounded square', shape_DIAMOND: 'Diamond',
+    shape_TRIANGLE: 'Triangle', shape_HEXAGON: 'Hexagon', shape_OCTAGON: 'Octagon', shape_STAR5: '5-point star', shape_STAR6: '6-point star', shape_STAR8: '8-point star',
+    createHere: 'Create a node here', pasteHere: 'Paste here',
+    found: (n) => `${plural(n, 'node', 'nodes')} found`, noResult: 'No results', limited: '… display limited to the first 200 results',
+  },
+  fr: {
+    openFile: 'Ouvrir un .graphml', zoomIn: 'Zoom +', zoomOut: 'Zoom −', fit: 'Ajuster', fitTitle: 'Ajuster à l’écran',
+    search: 'Recherche', searchTitle: 'Rechercher dans les descriptions ou les labels', edit: 'Mode édition', editTitle: 'Activer / désactiver le mode édition',
+    select: 'Sélection', selectTitle: 'Déplacer / sélectionner', link: 'Lier', linkTitle: 'Créer un lien entre deux nœuds',
+    undoLabel: 'Précédent', undoTitle: 'Précédent (Ctrl+Z)', redoLabel: 'Suivant', redoTitle: 'Suivant (Ctrl+Maj+Z)',
+    export: 'Exporter .graphml', exportTitle: 'Télécharger le .graphml modifié', loading: 'Chargement…', drop: 'Dépose un fichier .graphml',
+    qPlaceholder: 'Rechercher un mot ou un bloc de mots…', clearSearch: 'Effacer la recherche', descs: 'Descriptions', labelsMode: 'Labels',
+    invalidFile: 'Fichier GraphML invalide.', openHint: 'Ouvre un fichier .graphml (bouton en haut à gauche) ou dépose-le ici.',
+    confirmLoss: 'Des modifications non exportées seront perdues. Continuer ?',
+    nothingUndo: 'Rien à annuler', undone: 'Annulé', nothingRedo: 'Rien à rétablir', redone: 'Rétabli',
+    magnetTitle: 'Aimant : accrochage au déplacement (points d’origine, alignements, équidistance)', magnetOn: 'Aimant activé', magnetOff: 'Aimant désactivé',
+    linkToolToast: 'Glisse d’un nœud à l’autre (ou clique départ puis arrivée)',
+    exported: 'Fichier exporté', linkExists: 'Ce lien existe déjà', linkCreated: 'Lien créé', nodeCreated: 'Nœud créé',
+    cut: 'Coupé', clipEmpty: 'Presse-papiers vide', imageChanged: 'Image changée', imageBad: 'Image illisible',
+    nodesN: (n) => plural(n, 'nœud', 'nœuds'), linksN: (n) => plural(n, 'lien', 'liens'),
+    deleted: (parts, total) => parts.join(' et ') + (total > 1 ? ' supprimés' : ' supprimé'),
+    copied: (n) => plural(n, 'nœud', 'nœuds') + (n > 1 ? ' copiés' : ' copié'), pasted: (n) => plural(n, 'nœud', 'nœuds') + (n > 1 ? ' collés' : ' collé'),
+    newNode: 'NOUVEAU NŒUD',
+    panelTitle: 'Édition', linkHintEnd: 'Clique maintenant le nœud d’arrivée (Échap pour annuler).', linkHintStart: 'Outil lien : glisse d’un nœud à l’autre, ou clique le nœud de départ puis le nœud d’arrivée.',
+    delSel: 'Supprimer la sélection', linkOne: (s, t) => `Lien ${s} → ${t}`, linksSel: (n) => `${n} liens sélectionnés`,
+    hintLinks: 'Ctrl+clic : ajouter / retirer\nSuppr : supprimer',
+    mixSel: (nN, nE) => `${plural(nN, 'nœud', 'nœuds')}${nE ? ' et ' + plural(nE, 'lien', 'liens') : ''} sélectionné${nN + nE > 1 ? 's' : ''}`,
+    hintMulti: 'Glisser : déplacer le groupe\nCtrl+clic : ajouter / retirer\nCtrl+C / Ctrl+X / Ctrl+V : copier / couper / coller\nSuppr : supprimer',
+    hintNone: 'Glisse un nœud pour le déplacer (molette : déplacer la vue).\nClique un nœud ou un lien pour le sélectionner (Ctrl+clic : sélection multiple).\nClic droit sur le fond : créer un nœud.\nCtrl+C / Ctrl+X / Ctrl+V : copier / couper / coller.\nOutil « Lier » : glisse d’un nœud à l’autre.',
+    nodeTitle: (id) => 'Nœud ' + id, changeImage: 'Changer l’image…', descLabel: 'Description (texte ou HTML, affichée au survol)',
+    labelsLabel: 'Étiquettes', remove: 'Supprimer', addLabel: '+ Ajouter une étiquette',
+    appearance: 'Apparence', mixed: 'Mixte', imageOpt: 'Image (icône)', fill: 'Couleur', stroke: 'Contour', sizePx: 'Taille (px)',
+    colorHint: 'Couleur et contour : disponibles pour les formes (choisis une forme ci-dessus).',
+    shape_ELLIPSE: 'Rond', shape_RECTANGLE: 'Carré / rectangle', shape_ROUND_RECTANGLE: 'Carré arrondi', shape_DIAMOND: 'Losange',
+    shape_TRIANGLE: 'Triangle', shape_HEXAGON: 'Hexagone', shape_OCTAGON: 'Octogone', shape_STAR5: 'Étoile à 5 branches', shape_STAR6: 'Étoile à 6 branches', shape_STAR8: 'Étoile à 8 branches',
+    createHere: 'Créer un nœud ici', pasteHere: 'Coller ici',
+    found: (n) => plural(n, 'nœud trouvé', 'nœuds trouvés'), noResult: 'Aucun résultat', limited: '… affichage limité aux 200 premiers résultats',
+  },
+};
+let lang = 'en';
+try { const q = new URLSearchParams(location.search).get('lang'), st = localStorage.getItem('gv-lang'); lang = [q, st].find((v) => v === 'en' || v === 'fr') || ((navigator.language || '').toLowerCase().startsWith('fr') ? 'fr' : 'en'); } catch (_) { lang = (navigator.language || '').toLowerCase().startsWith('fr') ? 'fr' : 'en'; }
+const tr = (k, ...a) => { const v = I18N[lang][k] ?? I18N.en[k] ?? k; return typeof v === 'function' ? v(...a) : v; };
+function applyI18n() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach((e) => { e.textContent = tr(e.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-title]').forEach((e) => { e.title = tr(e.dataset.i18nTitle); });
+  document.querySelectorAll('[data-i18n-aria]').forEach((e) => { e.setAttribute('aria-label', tr(e.dataset.i18nAria)); });
+  document.querySelectorAll('[data-i18n-ph]').forEach((e) => { e.placeholder = tr(e.dataset.i18nPh); });
+  document.querySelectorAll('#lang button').forEach((b) => b.classList.toggle('on', b.dataset.l === lang));
+}
+function setLang(l) {
+  lang = l; try { localStorage.setItem('gv-lang', l); } catch (_) {}
+  applyI18n(); if (typeof refreshPanel === 'function' && model) refreshPanel(); if (model) computeSearch();
+}
+const setMsg = (key) => { msg.setAttribute('data-i18n', key); msg.textContent = tr(key); msg.classList.remove('hide'); };
+document.querySelectorAll('#lang button').forEach((b) => { b.onclick = () => setLang(b.dataset.l); });
+
 // ======================================================================
 //  Modèle, rendu
 // ======================================================================
@@ -290,7 +381,7 @@ function applySel() {
 
 function load(text, name) {
   const d = parseDoc(text);
-  if (!d) { msg.textContent = 'Fichier GraphML invalide.'; msg.classList.remove('hide'); return; }
+  if (!d) { setMsg('invalidFile'); return; }
   setDoc(d, name); undoStack.length = 0; redoStack.length = 0; clip = null; dirty = false;
   render(); msg.classList.add('hide');
   document.title = (name ? name + ' – ' : '') + 'GraphML Viewer';
@@ -305,7 +396,8 @@ function showTip(nd, g) {
   if (!nd.desc.trim()) return;
   const isHtml = /^\s*</.test(nd.desc);
   tip.className = isHtml ? 'show' : 'show plain';
-  if (isHtml) tip.innerHTML = sanitize(nd.desc); else tip.textContent = nd.desc.trim();
+  if (isHtml) tip.innerHTML = sanitize(nd.desc);
+  else tip.textContent = nd.desc.trim();
   tipOwner = g; placeTip(g);
 }
 function placeTip(g) {
@@ -413,19 +505,20 @@ function restore(str) {
   setDoc(d); render(); refreshPanel(); return true;
 }
 function undo() {
-  if (!undoStack.length) return toast('Rien à annuler');
+  if (!undoStack.length) return toast(tr('nothingUndo'));
   const cur = serialize(), st = undoStack.pop();
-  if (restore(st)) { redoStack.push(cur); dirty = true; toast('Annulé'); } updateBar();
+  if (restore(st)) { redoStack.push(cur); dirty = true; toast(tr('undone')); } updateBar();
 }
 function redo() {
-  if (!redoStack.length) return toast('Rien à rétablir');
+  if (!redoStack.length) return toast(tr('nothingRedo'));
   const cur = serialize(), st = redoStack.pop();
-  if (restore(st)) { undoStack.push(cur); dirty = true; toast('Rétabli'); } updateBar();
+  if (restore(st)) { undoStack.push(cur); dirty = true; toast(tr('redone')); } updateBar();
 }
 function updateBar() {
   $('undo').disabled = !undoStack.length; $('redo').disabled = !redoStack.length;
   document.body.classList.toggle('edit', editMode); document.body.classList.toggle('linking', tool === 'link');
   $('edit').setAttribute('aria-pressed', String(editMode));
+  $('magnet').setAttribute('aria-pressed', String(magnet)); $('magnet').classList.toggle('on', magnet);
   $('tool-select').classList.toggle('on', tool === 'select'); $('tool-link').classList.toggle('on', tool === 'link');
 }
 function setEdit(on) {
@@ -435,14 +528,16 @@ function setEdit(on) {
 $('edit').onclick = () => setEdit(!editMode);
 $('undo').onclick = undo;
 $('redo').onclick = redo;
+let magnet = false;
+$('magnet').onclick = () => { magnet = !magnet; updateBar(); toast(tr(magnet ? 'magnetOn' : 'magnetOff')); };
 $('tool-select').onclick = () => { tool = 'select'; cancelLink(true); updateBar(); };
-$('tool-link').onclick = () => { tool = 'link'; selNodes = new Set(); selEdges = new Set(); render(); refreshPanel(); updateBar(); toast('Glisse d’un nœud à l’autre (ou clique départ puis arrivée)'); };
+$('tool-link').onclick = () => { tool = 'link'; selNodes = new Set(); selEdges = new Set(); render(); refreshPanel(); updateBar(); toast(tr('linkToolToast')); };
 $('export').onclick = () => {
   const a = document.createElement('a'); const base = fileName.replace(/^.*\//, '').replace(/\.graphml$/i, '');
   normaliseLabels();
   a.href = URL.createObjectURL(new Blob([serialize()], { type: 'application/xml' })); a.download = base + '-edited.graphml';
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-  dirty = false; toast('Fichier exporté');
+  dirty = false; toast(tr('exported'));
 };
 addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
 
@@ -468,16 +563,104 @@ addEventListener('pointermove', (e) => {
     if (Math.hypot(e.clientX - nodeDrag.sx, e.clientY - nodeDrag.sy) < 4) return;
     nodeDrag.started = true; moved = true; checkpoint(); hideTip(); stage.classList.add('moving');
   }
+  let sdx = dx, sdy = dy;
+  if (magnet && editMode) { const r = magnetSnap(dx, dy); sdx = r.dx; sdy = r.dy; } else clearGuides();
   const touched = new Set();
   nodeDrag.starts.forEach(({ n, ox, oy }) => {
-    n.x = ox + dx; n.y = oy + dy; n.g.setAttribute('transform', `translate(${n.x} ${n.y})`);
+    n.x = ox + sdx; n.y = oy + sdy; n.g.setAttribute('transform', `translate(${n.x} ${n.y})`);
     (model.adj.get(n.id) || []).forEach((r) => touched.add(r));
   });
   touched.forEach((r) => { const d = edgeD(r); r.path.setAttribute('d', d); r.hit.setAttribute('d', d); });
 });
+// ----- aimant (snap) -----
+const SNAP_IN = 8, SNAP_OUT = 15; // seuils d'entrée / sortie, en pixels écran (hystérésis)
+const SNAP_RANGE = 260, SNAP_NEAR = 16; // périmètre d'activation (px écran) et nb max d'objets voisins pris en compte
+let guides = null;
+function clearGuides() { if (guides) { guides.remove(); guides = null; } }
+// Lignes de contrainte : alignement (droite passant par ≥2 objets, toute direction) et
+// équidistance radiale (médiatrice de 2 objets). Un snap = projection sur 1 ligne ou intersection de 2 lignes.
+function magnetSnap(dx, dy) {
+  const d = nodeDrag, P = d.nd;
+  if (!d.mag) {
+    const sel = new Set(d.starts.map((q) => q.n.id)), st = d.starts.find((q) => q.n === P);
+    d.mag = { others: [...model.nodes.values()].filter((n) => !sel.has(n.id)).map((n) => ({ id: n.id, x: n.x + n.w / 2, y: n.y + n.h / 2 })),
+      cx0: st.ox + P.w / 2, cy0: st.oy + P.h / 2, pt: null, act: null };
+  }
+  const m = d.mag, tIn = SNAP_IN / view.k, tOut = SNAP_OUT / view.k, rng = SNAP_RANGE / view.k;
+  const rx = m.cx0 + dx, ry = m.cy0 + dy; let px = rx, py = ry;
+  const dist = (o) => Math.hypot(o.x - rx, o.y - ry);
+  // périmètre : seuls les objets proches de l'origine du nœud déplacé comptent, les plus proches d'abord
+  const near = m.others.map((o) => ({ o, dd: dist(o) })).filter((q) => q.dd < rng).sort((a, b) => a.dd - b.dd).slice(0, SNAP_NEAR);
+  const marks = [];
+  // 1) coïncidence des origines (priorité maximale)
+  const keep = m.pt && m.others.find((o) => o.id === m.pt && dist(o) < tOut);
+  m.pt = keep ? keep.id : (near.length && near[0].dd < tIn ? near[0].o.id : null);
+  const pt = m.pt && m.others.find((o) => o.id === m.pt);
+  if (pt) { px = pt.x; py = pt.y; m.act = null; marks.push({ t: 'ring', x: pt.x, y: pt.y }); drawGuides(marks); return { dx: dx + px - rx, dy: dy + py - ry }; }
+  // 2) lignes candidates
+  const lines = new Map();
+  const sd = (l) => Math.abs((rx - l.x0) * l.uy - (ry - l.y0) * l.ux); // distance de l'origine à la ligne
+  for (let a = 0; a < near.length; a++) for (let b = a + 1; b < near.length; b++) {
+    const A = near[a].o, B = near[b].o, L = Math.hypot(B.x - A.x, B.y - A.y); if (L < 1) continue;
+    const ux = (B.x - A.x) / L, uy = (B.y - A.y) / L;
+    // alignement : droite (A,B) ; objets colinéaires
+    const col = near.filter((q) => Math.abs((q.o.x - A.x) * uy - (q.o.y - A.y) * ux) < 0.5);
+    const kA = 'A:' + col.map((q) => q.o.id).sort().join(',');
+    if (!lines.has(kA)) lines.set(kA, { key: kA, kind: 'A', x0: A.x, y0: A.y, ux, uy, objs: col.map((q) => q.o), prox: Math.min(...col.map((q) => q.dd)) });
+    // équidistance : médiatrice (A,B)
+    const kR = 'R:' + [A.id, B.id].sort().join(',');
+    lines.set(kR, { key: kR, kind: 'R', x0: (A.x + B.x) / 2, y0: (A.y + B.y) / 2, ux: -uy, uy: ux, objs: [A, B], prox: Math.max(near[a].dd, near[b].dd) });
+  }
+  const prevKeys = new Set(m.act || []);
+  const cands = [...lines.values()].filter((l) => { l.d = sd(l); return l.d < (prevKeys.has(l.key) ? tOut : tIn); });
+  const inter = (a, b) => { // intersection de deux lignes
+    const cr = a.ux * b.uy - a.uy * b.ux; if (Math.abs(cr) < 0.25) return null;
+    const t = ((b.x0 - a.x0) * b.uy - (b.y0 - a.y0) * b.ux) / cr; return { x: a.x0 + a.ux * t, y: a.y0 + a.uy * t };
+  };
+  const opts = [];
+  for (let a = 0; a < cands.length; a++) for (let b = a + 1; b < cands.length; b++) {
+    const A = cands[a], B = cands[b], X = inter(A, B); if (!X) continue;
+    const dd = Math.hypot(X.x - rx, X.y - ry); if (dd > tOut * 1.5) continue;
+    const tier = A.kind !== B.kind ? 1 : 2; // combo alignement × équidistance en premier
+    opts.push({ tier, ls: [A, B], x: X.x, y: X.y, score: Math.min(A.prox, B.prox) + dd });
+  }
+  cands.forEach((l) => opts.push({ tier: 3, ls: [l], score: l.prox + l.d }));
+  let pick = null;
+  if (m.act) { // stabilité : on garde la sélection précédente tant qu'elle reste valide
+    pick = opts.find((o) => o.ls.length === m.act.length && o.ls.every((l) => prevKeys.has(l.key)));
+    if (pick && pick.ls.length === 2 && Math.hypot(pick.x - rx, pick.y - ry) > tOut * 1.5) pick = null;
+  }
+  if (!pick) pick = opts.sort((a, b) => a.tier - b.tier || a.score - b.score)[0] || null;
+  m.act = pick ? pick.ls.map((l) => l.key) : null;
+  if (pick) {
+    if (pick.ls.length === 2) { px = pick.x; py = pick.y; }
+    else { const l = pick.ls[0], t = (rx - l.x0) * l.ux + (ry - l.y0) * l.uy; px = l.x0 + l.ux * t; py = l.y0 + l.uy * t; }
+    pick.ls.forEach((l) => {
+      if (l.kind === 'A') marks.push({ t: 'l', l, pts: [...l.objs, { x: px, y: py }] });
+      else { const R = Math.hypot(l.objs[0].x - px, l.objs[0].y - py); marks.push({ t: 'c', x: px, y: py, r: R, on: near.map((q) => q.o).filter((o) => Math.abs(Math.hypot(o.x - px, o.y - py) - R) < 0.75) }); }
+    });
+  }
+  drawGuides(marks);
+  return { dx: dx + px - rx, dy: dy + py - ry };
+}
+function drawGuides(marks) {
+  clearGuides(); if (!marks.length) return;
+  guides = make('g', { 'pointer-events': 'none' }, world);
+  const col = '#ff4fa3', base = { stroke: col, 'stroke-width': 1.5, 'vector-effect': 'non-scaling-stroke', fill: 'none' };
+  const ext = 24 / view.k;
+  marks.forEach((q) => {
+    if (q.t === 'l') {
+      const l = q.l, ts = q.pts.map((o) => (o.x - l.x0) * l.ux + (o.y - l.y0) * l.uy), t0 = Math.min(...ts) - ext, t1 = Math.max(...ts) + ext;
+      make('line', { ...base, x1: l.x0 + l.ux * t0, y1: l.y0 + l.uy * t0, x2: l.x0 + l.ux * t1, y2: l.y0 + l.uy * t1 }, guides);
+    } else if (q.t === 'c') {
+      make('circle', { ...base, cx: q.x, cy: q.y, r: q.r, 'stroke-dasharray': '1 6', 'stroke-linecap': 'round', 'stroke-width': 2.5 }, guides);
+      q.on.forEach((o) => make('circle', { ...base, cx: o.x, cy: o.y, r: 5 / view.k, fill: col, stroke: 'none' }, guides));
+    } else make('circle', { ...base, cx: q.x, cy: q.y, r: 10 / view.k }, guides);
+  });
+}
 function endNodeDrag(e) {
   if (!nodeDrag || e.pointerId !== nodeDrag.id) return;
-  const { starts, started } = nodeDrag; nodeDrag = null; stage.classList.remove('moving');
+  const { starts, started } = nodeDrag; nodeDrag = null; stage.classList.remove('moving'); clearGuides();
   if (started) {
     starts.forEach(({ n: nd }) => {
       nd.x = Math.round(nd.x * 1000) / 1000; nd.y = Math.round(nd.y * 1000) / 1000;
@@ -521,7 +704,7 @@ function startRubber(nd) {
   rubber = make('line', { x1: c.x, y1: c.y, x2: c.x, y2: c.y, stroke: '#4dd0e1', 'stroke-width': 2, 'stroke-dasharray': '5 4', 'pointer-events': 'none' }, world);
 }
 function tryLink(a, b) {
-  if (model.edges.some((r) => (r.s.id === a && r.t.id === b) || (r.s.id === b && r.t.id === a))) return toast('Ce lien existe déjà');
+  if (model.edges.some((r) => (r.s.id === a && r.t.id === b) || (r.s.id === b && r.t.id === a))) return toast(tr('linkExists'));
   createEdge(a, b);
 }
 function onNodeClick(nd, ev) {
@@ -551,7 +734,7 @@ function createEdge(a, b) {
   el.setAttribute('id', 'e' + n); el.setAttribute('source', a); el.setAttribute('target', b);
   el.removeAttribute('sourceport'); el.removeAttribute('targetport');
   graph.appendChild(el);
-  selEdges = new Set([el]); selNodes = new Set(); render(); refreshPanel(); toast('Lien créé');
+  selEdges = new Set([el]); selNodes = new Set(); render(); refreshPanel(); toast(tr('linkCreated'));
 }
 function deleteSelection() {
   if (!selNodes.size && !selEdges.size) return;
@@ -561,7 +744,7 @@ function deleteSelection() {
   kids(graph).filter((e) => e.localName === 'edge' && (ids.has(e.getAttribute('source')) || ids.has(e.getAttribute('target')))).forEach((e) => e.remove());
   ids.forEach((id) => { const n = model.nodes.get(id); if (n) n.el.remove(); });
   selNodes = new Set(); selEdges = new Set(); render(); refreshPanel();
-  toast([nN && `${nN} nœud${nN > 1 ? 's' : ''}`, nE && `${nE} lien${nE > 1 ? 's' : ''}`].filter(Boolean).join(' et ') + ' supprimé' + (nN + nE > 1 ? 's' : ''));
+  toast(tr('deleted', [nN && tr('nodesN', nN), nE && tr('linksN', nE)].filter(Boolean), nN + nE));
 }
 function deleteNodes(ids) {
   if (!ids.size) return;
@@ -577,11 +760,11 @@ function copySel() {
   const nodes = [...ids].map((id) => model.nodes.get(id)).filter(Boolean);
   const edges = kids(graph).filter((e) => e.localName === 'edge' && ids.has(e.getAttribute('source')) && ids.has(e.getAttribute('target')));
   clip = { nodes: nodes.map((n) => ({ el: n.el.cloneNode(true), id: n.id, x: n.x, y: n.y })), edges: edges.map((e) => e.cloneNode(true)), pastes: 0 };
-  toast(`${nodes.length} nœud${nodes.length > 1 ? 's' : ''} copié${nodes.length > 1 ? 's' : ''}`); return true;
+  toast(tr('copied', nodes.length)); return true;
 }
-function cutSel() { if (copySel()) { deleteNodes(new Set(selNodes)); toast('Coupé'); } }
+function cutSel() { if (copySel()) { deleteNodes(new Set(selNodes)); toast(tr('cut')); } }
 function pasteClip(at) {
-  if (!clip || !clip.nodes.length) return toast('Presse-papiers vide');
+  if (!clip || !clip.nodes.length) return toast(tr('clipEmpty'));
   checkpoint();
   const graph = Array.from(doc.getElementsByTagName('graph'))[0];
   const nodeIds = new Set(), edgeIds = new Set(); let maxN = -1, maxE = -1, maxZ = 0;
@@ -615,7 +798,7 @@ function pasteClip(at) {
     graph.appendChild(el);
   });
   selNodes = created; selEdges = new Set(); render(); refreshPanel();
-  toast(`${created.size} nœud${created.size > 1 ? 's' : ''} collé${created.size > 1 ? 's' : ''}`);
+  toast(tr('pasted', created.size));
 }
 
 function nextNodeIds() {
@@ -629,18 +812,17 @@ function createNodeAt(pos) {
   const node = doc.createElementNS(XMLNS.graphml, 'node'); node.setAttribute('id', id);
   const mk = (key) => { const d = doc.createElementNS(XMLNS.graphml, 'data'); d.setAttribute('key', key); node.append(d); return d; };
   mk('d0').textContent = String(maxZ + 1);
-  setCdata(mk('d3'), 'NOUVEAU NŒUD');
+  setCdata(mk('d3'), tr('newNode'));
   const r = doc.createElementNS(XMLNS.y, 'y:RectD');
   r.setAttribute('X', Math.round((pos.x - size / 2) * 1000) / 1000); r.setAttribute('Y', Math.round((pos.y - size / 2) * 1000) / 1000);
   r.setAttribute('Width', size); r.setAttribute('Height', size); mk('d5').append(r);
   const st = doc.createElementNS(XMLNS.yjs, 'yjs:ShapeNodeStyle'); st.setAttribute('shape', 'ELLIPSE');
   st.setAttribute('stroke', '#FFE8E8EC'); st.setAttribute('fill', `{y:GraphMLReference ${colorRes('#FF6B5B95')}}`); mk('d7').append(st);
   graph.insertBefore(node, kids(graph).find((c) => c.localName === 'edge') || null);
-  selNodes = new Set([id]); selEdges = new Set(); render(); refreshPanel(); toast('Nœud créé');
+  selNodes = new Set([id]); selEdges = new Set(); render(); refreshPanel(); toast(tr('nodeCreated'));
 }
 // ----- apparence : forme, couleurs, taille -----
-const SHAPES = [['ELLIPSE', 'Rond'], ['RECTANGLE', 'Carré / rectangle'], ['ROUND_RECTANGLE', 'Carré arrondi'], ['DIAMOND', 'Losange'], ['TRIANGLE', 'Triangle'],
-  ['HEXAGON', 'Hexagone'], ['OCTAGON', 'Octogone'], ['STAR5', 'Étoile à 5 branches'], ['STAR6', 'Étoile à 6 branches'], ['STAR8', 'Étoile à 8 branches']];
+const SHAPES = ['ELLIPSE', 'RECTANGLE', 'ROUND_RECTANGLE', 'DIAMOND', 'TRIANGLE', 'HEXAGON', 'OCTAGON', 'STAR5', 'STAR6', 'STAR8'].map((v) => [v, 'shape_' + v]);
 const sharedData = () => Array.from(doc.getElementsByTagName('*')).find((e) => e.localName === 'SharedData');
 function colorRes(argbStr) {                         // ressource <yjs:Color> partagée (réutilise une identique)
   const up = argbStr.toUpperCase();
@@ -680,13 +862,13 @@ function resizeNode(n, size) {                        // garde le centre et le r
 }
 function appearanceBox(ids) {
   const live = () => ids.map((id) => model.nodes.get(id)).filter(Boolean);
-  const nds = live(), kinds = new Set(nds.map(kindOf)), wrap = el('div', { class: 'appearance' }, el('label', {}, 'Apparence'));
+  const nds = live(), kinds = new Set(nds.map(kindOf)), wrap = el('div', { class: 'appearance' }, el('label', {}, tr('appearance')));
   const sel = el('select', {});
-  if (kinds.size > 1) sel.append(el('option', { value: '', disabled: '' }, 'Mixte'));
-  if (nds.every((n) => kindOf(n) === 'IMAGE' || imageStash.has(n.id))) sel.append(el('option', { value: 'IMAGE' }, 'Image (icône)'));
+  if (kinds.size > 1) sel.append(el('option', { value: '', disabled: '' }, tr('mixed')));
+  if (nds.every((n) => kindOf(n) === 'IMAGE' || imageStash.has(n.id))) sel.append(el('option', { value: 'IMAGE' }, tr('imageOpt')));
   const known = new Set(SHAPES.map((x) => x[0]));
   kinds.forEach((k) => { if (k !== 'IMAGE' && !known.has(k)) sel.append(el('option', { value: k }, k)); });
-  SHAPES.forEach(([v, l]) => sel.append(el('option', { value: v }, l)));
+  SHAPES.forEach(([v, l]) => sel.append(el('option', { value: v }, tr(l))));
   sel.value = kinds.size === 1 ? [...kinds][0] : '';
   sel.onchange = () => { const v = sel.value; checkpoint(); live().forEach((n) => { if (v === 'IMAGE') restoreImage(n); else setShape(n, v); }); render(); refreshPanel(); };
   wrap.append(sel);
@@ -698,13 +880,13 @@ function appearanceBox(ids) {
     const upd = (o) => { if (!armedC) { checkpoint(); armedC = true; } live().forEach((n) => setShapeColors(n, o)); render(); };
     fi.oninput = () => upd({ fill: fi.value }); si.oninput = () => upd({ stroke: si.value });
     fi.onchange = si.onchange = () => { armedC = false; };
-    wrap.append(el('div', { class: 'row' }, el('span', { class: 'lbl' }, 'Couleur'), fi, el('span', { class: 'lbl' }, 'Contour'), si));
-  } else wrap.append(el('p', { class: 'hint' }, 'Couleur et contour : disponibles pour les formes (choisis une forme ci-dessus).'));
+    wrap.append(el('div', { class: 'row' }, el('span', { class: 'lbl' }, tr('fill')), fi, el('span', { class: 'lbl' }, tr('stroke')), si));
+  } else wrap.append(el('p', { class: 'hint' }, tr('colorHint')));
   const sz = el('input', { type: 'number', min: '6', max: '400', step: '1' }); sz.value = String(Math.round(nds[0].w * 10) / 10);
   let armedS = false;
   sz.oninput = () => { const v = parseFloat(sz.value); if (!(v >= 6 && v <= 400)) return; if (!armedS) { checkpoint(); armedS = true; } live().forEach((n) => resizeNode(n, v)); render(); };
   sz.onchange = () => { armedS = false; };
-  wrap.append(el('div', { class: 'row' }, el('span', { class: 'lbl' }, 'Taille (px)'), sz));
+  wrap.append(el('div', { class: 'row' }, el('span', { class: 'lbl' }, tr('sizePx')), sz));
   return wrap;
 }
 // ----- menu contextuel (clic droit) -----
@@ -713,8 +895,8 @@ const hideCtx = () => ctx.classList.remove('show');
 stage.addEventListener('contextmenu', (e) => {
   e.preventDefault(); hideCtx(); if (!editMode) return; hideTip();
   const pos = toWorld(e.clientX, e.clientY);
-  ctx.replaceChildren(el('button', { onclick: () => { hideCtx(); createNodeAt(pos); } }, 'Créer un nœud ici'),
-    ...(clip ? [el('button', { onclick: () => { hideCtx(); pasteClip(pos); } }, 'Coller ici')] : []));
+  ctx.replaceChildren(el('button', { onclick: () => { hideCtx(); createNodeAt(pos); } }, tr('createHere')),
+    ...(clip ? [el('button', { onclick: () => { hideCtx(); pasteClip(pos); } }, tr('pasteHere'))] : []));
   ctx.classList.add('show');
   ctx.style.left = Math.min(e.clientX, innerWidth - ctx.offsetWidth - 8) + 'px'; ctx.style.top = Math.min(e.clientY, innerHeight - ctx.offsetHeight - 8) + 'px';
 });
@@ -795,6 +977,7 @@ const ICONS = {
   undo: '<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
   redo: '<path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/>',
   close: '<path d="M18 6 6 18M6 6l12 12"/>',
+  magnet: '<path d="M6 15V4h4v11a2 2 0 0 0 4 0V4h4v11a6 6 0 0 1-12 0Z"/><path d="M6 8h4M14 8h4"/>',
 };
 function icon(name) {
   const w = document.createElement('span'); w.className = 'ic';
@@ -808,39 +991,39 @@ function el(tag, attrs, ...ch) { const e = document.createElement(tag); for (con
 function refreshPanel() {
   panel.replaceChildren();
   if (!editMode) return;
-  panel.append(el('h2', {}, 'Édition'));
-  if (tool === 'link') { panel.append(el('p', { class: 'hint' }, linkFrom ? 'Clique maintenant le nœud d’arrivée (Échap pour annuler).' : 'Outil lien : clique le nœud de départ, puis le nœud d’arrivée.')); return; }
+  panel.append(el('h2', {}, tr('panelTitle')));
+  if (tool === 'link') { panel.append(el('p', { class: 'hint' }, tr(linkFrom ? 'linkHintEnd' : 'linkHintStart'))); return; }
   const nN = selNodes.size, nE = selEdges.size;
-  const delBtn = el('button', { class: 'danger', onclick: deleteSelection }, 'Supprimer la sélection');
+  const delBtn = el('button', { class: 'danger', onclick: deleteSelection }, tr('delSel'));
   if (nE && !nN) {
     const one = nE === 1 ? [...selEdges][0] : null;
-    panel.append(el('h3', {}, one ? `Lien ${one.getAttribute('source')} → ${one.getAttribute('target')}` : `${nE} liens sélectionnés`),
-      el('p', { class: 'hint' }, 'Ctrl+clic : ajouter / retirer\nSuppr : supprimer'), delBtn);
+    panel.append(el('h3', {}, one ? tr('linkOne', one.getAttribute('source'), one.getAttribute('target')) : tr('linksSel', nE)),
+      el('p', { class: 'hint' }, tr('hintLinks')), delBtn);
     return;
   }
   if (nN > 1 || (nN && nE)) {
-    panel.append(el('h3', {}, `${nN} nœuds${nE ? ' et ' + nE + (nE > 1 ? ' liens' : ' lien') : ''} sélectionnés`),
-      el('p', { class: 'hint' }, 'Glisser : déplacer le groupe\nCtrl+clic : ajouter / retirer\nCtrl+C / Ctrl+X / Ctrl+V : copier / couper / coller\nSuppr : supprimer'),
+    panel.append(el('h3', {}, tr('mixSel', nN, nE)),
+      el('p', { class: 'hint' }, tr('hintMulti')),
       appearanceBox([...selNodes]), delBtn);
     return;
   }
   const nd = nN === 1 ? model.nodes.get([...selNodes][0]) : null;
-  if (!nd) { panel.append(el('p', { class: 'hint' }, 'Glisse un nœud pour le déplacer (molette : déplacer la vue).\nClique un nœud ou un lien pour le sélectionner (Ctrl+clic : sélection multiple).\nClique-droit sur le fond : créer un nœud.\nCtrl+C / Ctrl+X / Ctrl+V : copier / couper / coller.\nOutil « Lier » : glisse d’un nœud à l’autre.')); return; }
-  panel.append(el('h3', {}, 'Nœud ' + nd.id));
+  if (!nd) { panel.append(el('p', { class: 'hint' }, tr('hintNone'))); return; }
+  panel.append(el('h3', {}, tr('nodeTitle', nd.id)));
   // image
   const prev = el('img', { class: 'thumb', alt: '' }); const st = first(dataOf(nd.el, 'd7') || document.createElement('x')); const href = st && st.localName === 'ImageNodeStyle' ? imageHref(st) : null; if (href) prev.src = href;
   const pick = el('input', { type: 'file', accept: 'image/*', style: 'display:none' });
-  pick.onchange = async () => { const f = pick.files[0]; if (!f) return; try { const uri = await resizeToPng(f, 128); checkpoint(); setNodeImage(nd, uri); render(); refreshPanel(); toast('Image changée'); } catch (e) { toast('Image illisible'); } };
-  panel.append(el('div', { class: 'row' }, prev, el('button', { onclick: () => pick.click() }, 'Changer l’image…'), pick));
+  pick.onchange = async () => { const f = pick.files[0]; if (!f) return; try { const uri = await resizeToPng(f, 128); checkpoint(); setNodeImage(nd, uri); render(); refreshPanel(); toast(tr('imageChanged')); } catch (e) { toast(tr('imageBad')); } };
+  panel.append(el('div', { class: 'row' }, prev, el('button', { onclick: () => pick.click() }, tr('changeImage')), pick));
   panel.append(appearanceBox([nd.id]));
   // description
   const ta = el('textarea', { rows: 12, spellcheck: 'false' }); ta.value = nd.desc;
   let armed = false;
   ta.oninput = () => { if (!armed) { checkpoint(); armed = true; } setDescription(nd, ta.value); };
   ta.onblur = () => { armed = false; };
-  panel.append(el('label', {}, 'Description (texte ou HTML, survol)'), ta);
+  panel.append(el('label', {}, tr('descLabel')), ta);
   // étiquettes
-  panel.append(el('label', {}, 'Étiquettes'));
+  panel.append(el('label', {}, tr('labelsLabel')));
   const box = el('div', { class: 'labels' }); panel.append(box);
   const drawRows = () => {
     box.replaceChildren();
@@ -848,9 +1031,9 @@ function refreshPanel() {
       const inp = el('input', { type: 'text' }); inp.value = labelText(lab).txt; let armedL = false, tm;
       inp.oninput = () => { if (!armedL) { checkpoint(); armedL = true; } setLabelText(lab, inp.value); clearTimeout(tm); tm = setTimeout(render, 150); };
       inp.onblur = () => { armedL = false; };
-      box.append(el('div', { class: 'row' }, inp, el('button', { title: 'Supprimer', onclick: () => { checkpoint(); lab.remove(); const l = labelList(nd); if (l && !l.children.length) l.parentNode.remove(); render(); drawRows(); } }, icon('close'))));
+      box.append(el('div', { class: 'row' }, inp, el('button', { title: tr('remove'), onclick: () => { checkpoint(); lab.remove(); const l = labelList(nd); if (l && !l.children.length) l.parentNode.remove(); render(); drawRows(); } }, icon('close'))));
     });
-    box.append(el('button', { onclick: () => { checkpoint(); { labelList(nd, true).appendChild(newLabel(nd, 'NEW!')); } render(); drawRows(); } }, '+ Ajouter une étiquette'));
+    box.append(el('button', { onclick: () => { checkpoint(); { labelList(nd, true).appendChild(newLabel(nd, 'NEW!')); } render(); drawRows(); } }, tr('addLabel')));
   };
   drawRows();
   panel.append(delBtn);
@@ -870,7 +1053,7 @@ function parseDesc(nd) {
   const desc = nd.desc; let title = '', lines = [];
   if (!/<[a-z!/][^>]*>/i.test(desc)) {
     const ls = desc.split('\n').map((t) => t.replace(/\s+/g, ' ').trim()).filter(Boolean);
-    title = ls.shift() || ''; lines = ls.map((t) => [{ t }]);
+    lines = ls.map((t) => [{ t }]);                     // texte brut : pas de titre → l'id du nœud sert de repli
   } else {
     const d = new DOMParser().parseFromString(desc, 'text/html');
     let cur = [], titleSet = false, sawText = false;
@@ -906,7 +1089,7 @@ function parseDesc(nd) {
     title = lines[0][0].t.trim(); lines[0].shift();
     if (lines[0].length) lines[0][0].t = lines[0][0].t.replace(/^\s+/, ''); else lines.shift();
   }
-  nd._parsed = { title: title || nd.id, lines }; nd._src = desc;
+  nd._parsed = { title: title ? title.toUpperCase() : nd.id, lines }; nd._src = desc;
   return nd._parsed;
 }
 function renderSegs(parent, segs, q) {
@@ -964,10 +1147,10 @@ function applyRings() {
 function renderResults(q, mode) {
   const top = resultsEl.scrollTop; resultsEl.replaceChildren();
   if (!q) { scountEl.textContent = ''; return; }
-  scountEl.textContent = searchHits.size ? `${searchHits.size} nœud${searchHits.size > 1 ? 's' : ''} trouvé${searchHits.size > 1 ? 's' : ''}` : 'Aucun résultat';
+  scountEl.textContent = searchHits.size ? tr('found', searchHits.size) : tr('noResult');
   let n = 0;
   for (const [id, h] of searchHits) {
-    if (n++ >= 200) { resultsEl.append(el('div', { class: 'more' }, '… affichage limité aux 200 premiers résultats')); break; }
+    if (n++ >= 200) { resultsEl.append(el('div', { class: 'more' }, tr('limited'))); break; }
     const body = el('div', { class: 'snip' });
     const head = el('div', { class: 'rtitle' });
     if (mode === 'desc') { renderSegs(head, [{ t: h.title, b: true }], q); h.lines.forEach((ln) => { const d = el('div', { class: 'line' }); renderSegs(d, ln, q); body.append(d); }); }
@@ -1017,7 +1200,7 @@ addEventListener('keydown', (e) => {
 // ======================================================================
 //  Chargement de fichiers
 // ======================================================================
-const readFile = (f) => { if (dirty && !confirm('Des modifications non exportées seront perdues. Continuer ?')) return; f.text().then((t) => load(t, f.name)); };
+const readFile = (f) => { if (dirty && !confirm(tr('confirmLoss'))) return; f.text().then((t) => load(t, f.name)); };
 $('file').addEventListener('change', (e) => { if (e.target.files[0]) readFile(e.target.files[0]); e.target.value = ''; });
 const dropEl = $('drop');
 addEventListener('dragover', (e) => { e.preventDefault(); dropEl.classList.add('show'); });
@@ -1028,6 +1211,7 @@ if (!EDIT_ALLOWED) $('edit').style.display = 'none';
 const params = new URLSearchParams(location.search);
 const src = params.get('file') || 'graph.graphml';
 fetch(src).then((r) => { if (!r.ok) throw new Error(r.status); return r.text(); }).then((t) => { load(t, src); if (params.get('edit') === '1') setEdit(true); })
-  .catch(() => { msg.textContent = 'Ouvre un fichier .graphml (bouton en haut à gauche) ou dépose-le ici.'; });
+  .catch(() => { setMsg('openHint'); });
+applyI18n();
 updateBar();
 })();
